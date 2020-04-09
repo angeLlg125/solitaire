@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import java.awt.event.MouseListener;
 import structure.Board;
 import structure.Deck;
+import structure.Menu;
 
 /**
  *
@@ -22,6 +23,7 @@ public class MyCanvas extends JPanel implements  MouseMotionListener, MouseListe
     
     private final Board board = new Board();
     private final Deck deck = new Deck();
+    private final Menu menu = new Menu();
     
     public MyCanvas(){
 
@@ -39,12 +41,17 @@ public class MyCanvas extends JPanel implements  MouseMotionListener, MouseListe
         g.fillRect(0, 0, Constants.WINDOW_X_SIZE, Constants.WINDOW_Y_SIZE);
         
         board.drawBoard(g, this);
+       
+        menu.drawMenu(g);
     }
 
     @Override
     public void mouseDragged(MouseEvent me) {
-        this.board.draggImages(me.getX(), me.getY());
-
+        if (!menu.isIsActive()) {
+            this.board.draggImages(me.getX(), me.getY());
+        }else{
+            menu.showHideMenu(this);
+        }
         this.repaint();
     }
 
@@ -54,7 +61,19 @@ public class MyCanvas extends JPanel implements  MouseMotionListener, MouseListe
 
     @Override
     public void mouseClicked(MouseEvent me) {
-        board.clickProvider(me.getX(), me.getY());
+        // If we click menu
+        if(me.getX() <= menu.getSize()){
+            if(menu.isIsActive()){
+                menu.clickOption(me.getX(), me.getY(), this);
+            }
+            menu.showHideMenu(this);
+        }
+        if(!menu.isIsActive()){
+            board.clickProvider(me.getX(), me.getY());
+        }else{
+            menu.showHideMenu(this);
+        }
+        
         repaint();
     }
 
@@ -64,8 +83,10 @@ public class MyCanvas extends JPanel implements  MouseMotionListener, MouseListe
 
     @Override
     public void mouseReleased(MouseEvent me) {
-        this.board.releaseCards(me.getX(), me.getY());
-        repaint();
+        if (!menu.isIsActive()) {
+            this.board.releaseCards(me.getX(), me.getY());
+        }
+        this.repaint();
     }
 
     @Override
