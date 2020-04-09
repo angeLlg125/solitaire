@@ -378,7 +378,7 @@ public class Board{
                 group.addCard(draggedCard);
                 draggedCard.setIsSelected(false);
                 draggedCards.getCards().remove();
-                sound.playSound(Constants.Sounds.CLICK_CARD);
+                sound.playSound(Constants.Sounds.CARD_OK);
                 this.setNewCoordinates(draggedCard, group);
                 if(groupOwnerOfDraggedCards.getCards().size() > 0 && !groupOwnerOfDraggedCards.getCards().getFirst().isVisible()){
                     groupOwnerOfDraggedCards.getCards().getLast().setIsVisible(true);
@@ -389,7 +389,7 @@ public class Board{
                 draggedCard.setIsSelected(false);
                 draggedCards.getCards().remove();
                 this.setNewCoordinates(draggedCard, group);
-                sound.playSound(Constants.Sounds.CLICK_CARD);
+                sound.playSound(Constants.Sounds.CARD_OK);
                 if(groupOwnerOfDraggedCards.getCards().size() > 0 && !groupOwnerOfDraggedCards.getCards().getFirst().isVisible()){
                     groupOwnerOfDraggedCards.getCards().getLast().setIsVisible(true);
                 }
@@ -418,13 +418,13 @@ public class Board{
                     group.getCards().getLast().isRedColor() != draggedCards.getCards().getFirst().isRedColor()){
 
                 this.moveAllCardsToAnotherList(draggedCards, group);
-                sound.playSound(Constants.Sounds.CLICK_CARD);
+                sound.playSound(Constants.Sounds.CARD_OK);
                 if(groupOwnerOfDraggedCards.getCards().size() > 0 && !groupOwnerOfDraggedCards.getCards().getFirst().isVisible()){
                     groupOwnerOfDraggedCards.getCards().getLast().setIsVisible(true);
                 }
             }else if(group.getCards().isEmpty() && draggedCard.getNumber() == 13){
                 this.moveAllCardsToAnotherList(draggedCards, group);
-                sound.playSound(Constants.Sounds.CLICK_CARD);
+                sound.playSound(Constants.Sounds.CARD_OK);
                 if(groupOwnerOfDraggedCards.getCards().size() > 0 && !groupOwnerOfDraggedCards.getCards().getFirst().isVisible()){
                     groupOwnerOfDraggedCards.getCards().getLast().setIsVisible(true);
                 }
@@ -433,13 +433,10 @@ public class Board{
             }
     }
 
-    private boolean isXYInsideXYRegion(int mouse_x, int mouse_y,
-            int region_x, int region_y){
-        
+    private boolean isXYInsideXYRegion(int mouse_x, int mouse_y, int region_x, int region_y){
         if(mouse_x >= region_x && mouse_x <= region_x + Constants.CARD_X_SIZE
             && mouse_y >= region_y  && mouse_y <= region_y + Constants.CARD_Y_SIZE){
             return true;
-            
         }
         return false;
     }

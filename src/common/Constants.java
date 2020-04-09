@@ -30,7 +30,7 @@ public class Constants {
     public static int MENU_MAX_LENGT = 200;
     
     public static class Sounds {
-    	public static String CLICK_CARD = "button-click.wav";
+    	public static String CARD_OK = "button-click.wav";
     	public static String STROKE = "carton-impact-5.wav";
     	public static String DRAGGING = "smokearrodillandose-001.wav";
     	public static String CLICK_PROVIDER = "sinnett-card.wav";
