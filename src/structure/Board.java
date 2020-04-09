@@ -116,17 +116,18 @@ public class Board{
             }
         }
     }
-    
+
     private void drawDraggedCards(LinkedList<Card> cards, Graphics g, ImageObserver observer){
         Card card;
+        Card initial = cards.size() > 0 ? cards.get(0) : new Card();
 
         g.setColor(Constants.selectedCardColor);
         for (int i = 0; i < cards.size(); i++) {
             card = cards.get(i);
 
-            g.drawImage(card.getImage(), cards.get(0).getImageXLocation(), cards.get(0).getImageYLocation() + i * Constants.SPACE_BETWEEN_CARDS_IN_LIST, 
+            g.drawImage(card.getImage(), initial.getImageXLocation(), initial.getImageYLocation() + i * Constants.SPACE_BETWEEN_CARDS_IN_LIST, 
                     card.getImageXSize(), card.getImageYSize(), observer);
-            g.fillRect(cards.get(0).getImageXLocation(), cards.get(0).getImageYLocation() + i * Constants.SPACE_BETWEEN_CARDS_IN_LIST, card.getImageXSize(), card.getImageYSize());
+            g.fillRect(initial.getImageXLocation(), initial.getImageYLocation() + i * Constants.SPACE_BETWEEN_CARDS_IN_LIST, card.getImageXSize(), card.getImageYSize());
         }
     }
     
