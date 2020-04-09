@@ -5,7 +5,7 @@
  */
 package structure;
 
-import animations.Sound;
+import common.Sound;
 import common.Constants;
 import java.awt.Graphics;
 import java.awt.image.ImageObserver;
@@ -15,14 +15,13 @@ import java.util.LinkedList;
  *
  * @author angel
  */
-public class Board implements Runnable{
+public class Board{
     
     private int x_clicket_in_dragged_card;
     private int y_clicket_in_dragged_card;
     private final CardsGroup draggedCards;
     private CardsGroup groupOwnerOfDraggedCards;
 
-    // private CardsGroup[] groups = new CardsGroup[12];
     private final CardsGroup provider1;
     private final CardsGroup provider2;
     
@@ -39,7 +38,7 @@ public class Board implements Runnable{
     private final CardsGroup gameGroup6;
     private final CardsGroup gameGroup7;
     
-    Sound sound;
+    private final Sound sound;
     
     public Board(){
         draggedCards = new CardsGroup(0, 0, 0, 0, 13, "vertical");
@@ -52,13 +51,13 @@ public class Board implements Runnable{
         groupCompleted3 = new CardsGroup(1100, 20, 0, -5, 1, "onTop");
         groupCompleted4 = new CardsGroup(1300, 20, 0, -6, 1, "onTop");
         
-        gameGroup1 = new CardsGroup(100, 500, 1, 1, 13, "vertical");
-        gameGroup2 = new CardsGroup(300, 500, 2, 2, 13, "vertical");
-        gameGroup3 = new CardsGroup(500, 500, 3, 3, 13, "vertical");
-        gameGroup4 = new CardsGroup(700, 500, 4, 4, 13, "vertical");
-        gameGroup5 = new CardsGroup(900, 500, 5, 5, 13, "vertical");
-        gameGroup6 = new CardsGroup(1100, 500, 6, 6, 13, "vertical");
-        gameGroup7 = new CardsGroup(1300, 500, 7, 7, 13, "vertical");
+        gameGroup1 = new CardsGroup(100, 400, 1, 1, 13, "vertical");
+        gameGroup2 = new CardsGroup(300, 400, 2, 2, 13, "vertical");
+        gameGroup3 = new CardsGroup(500, 400, 3, 3, 13, "vertical");
+        gameGroup4 = new CardsGroup(700, 400, 4, 4, 13, "vertical");
+        gameGroup5 = new CardsGroup(900, 400, 5, 5, 13, "vertical");
+        gameGroup6 = new CardsGroup(1100, 400, 6, 6, 13, "vertical");
+        gameGroup7 = new CardsGroup(1300, 400, 7, 7, 13, "vertical");
         
         sound = new Sound();
     }
@@ -66,7 +65,6 @@ public class Board implements Runnable{
     public void drawBoard(Graphics g, ImageObserver observer){
         g.setColor(Constants.groupsColor);
 
-        // Rectangle 
         g.fillRect(provider1.getX_position(), provider1.getY_position(), provider1.getX_size(), provider1.getY_size());
         g.fillRect(provider2.getX_position(), provider2.getY_position(), provider2.getX_size(), provider2.getY_size());
         
@@ -112,7 +110,7 @@ public class Board implements Runnable{
                 g.drawImage(card.getImage(), card.getImageXLocation(), card.getImageYLocation(), 
                         card.getImageXSize(), card.getImageYSize(), observer);
             }else{
-                // If the card is hidden, show the image that represent that card still not available
+                // If the card is hidden, show the image that represents a card not available
                 g.drawImage(Deck.HIDDEN_SIDE.getImage(), card.getImageXLocation(), card.getImageYLocation(), 
                         card.getImageXSize(), card.getImageYSize(), observer);
             }
@@ -122,7 +120,6 @@ public class Board implements Runnable{
     private void drawDraggedCards(LinkedList<Card> cards, Graphics g, ImageObserver observer){
         Card card;
 
-        // 
         g.setColor(Constants.selectedCardColor);
         for (int i = 0; i < cards.size(); i++) {
             card = cards.get(i);
@@ -133,8 +130,7 @@ public class Board implements Runnable{
         }
     }
     
-    // This method is used to add the cards to each group, this follow the logic of the solitaire when a new game start
-    // gameGroup 1 has 1 visible card, gameGroup 2 has 2 cards only one visible, and so on
+    // This method is used to add the cards to each group when the game starts
     public void addCards(LinkedList<Card> cards){
         int currentStack = 1;
         Card currentCard;
@@ -205,17 +201,16 @@ public class Board implements Runnable{
     
     public void clickProvider(int x, int y){
         
-        // The used need to click in the provider list to activate this event
+        // When provider list 1 is clicked
         if(x >= provider1.getX_position() && x <= provider1.getX_position() + Constants.CARD_X_SIZE
            && y >= provider1.getY_position() && y <= provider1.getY_position() + Constants.CARD_Y_SIZE){
             Card card = null;
             
             if(provider1.getCards().isEmpty() && provider2.getCards().isEmpty()){
-                // NO more
                 return;
             }
             sound.playSound("sinnett-card.wav");
-            // return all cards to provider1
+
             // TODO: Fix this issue, first card needs to be shown in this order, 123(1) 456(itr 2) remove 6, next itr swow543 
             while(!provider2.getCards().isEmpty()){
                 card = provider2.getCards().removeFirst();
@@ -244,7 +239,7 @@ public class Board implements Runnable{
     }
     
     public void draggImages(int x, int y){
-        // When the list draggedCards contains cards, dont search for new cards to dragg and update coordinates
+        // When the list draggedCards contains cards, dont search for new cards to dragg only update coordinates
         if(!draggedCards.getCards().isEmpty()){
             Card card = draggedCards.getCards().get(0);
 
@@ -275,7 +270,7 @@ public class Board implements Runnable{
         for (int i = cards.getCards().size() -1; i > -1; i--) {
             card = cards.getCards().get(i);
 
-            // If we are draggin inside one card add coards to draggedCards list
+            // If we are draggin inside one card add cards to draggedCards list
             if(x >= card.getImageXLocation() && x <= card.getImageXLocation() + Constants.CARD_X_SIZE
                && y >= card.getImageYLocation() && y <= card.getImageYLocation() + Constants.CARD_Y_SIZE){
                 
@@ -311,7 +306,7 @@ public class Board implements Runnable{
     }
     
     public void releaseCards(int x, int y){
-        // Verify if we release the cards inside one group
+        // Verify if we release the cards inside one group coordinates
         if(!draggedCards.getCards().isEmpty()){
             if(this.isXYInsideXYRegion(x, y, 
                     this.gameGroup1.getX_position(), 
@@ -370,6 +365,7 @@ public class Board implements Runnable{
     private void conditionsForGroupsCompleted(CardsGroup group, CardsGroup draggedCards){
         
         if(draggedCards.getCards().size() == 1){
+            // When trying to add a card to the same group that had the card before
             if (group.getId() == groupOwnerOfDraggedCards.getId()) {
                 moveAllCardsToAnotherList(draggedCards, groupOwnerOfDraggedCards);
                 return;
@@ -412,6 +408,8 @@ public class Board implements Runnable{
     
     private void conditionsForGameGroups(CardsGroup group, CardsGroup draggedCards){
             Card draggedCard = draggedCards.getCards().getFirst();
+            
+            // When trying to add a card to the same group that had the card before
             if (group.getId() == groupOwnerOfDraggedCards.getId()) {
                 moveAllCardsToAnotherList(draggedCards, groupOwnerOfDraggedCards);
                 return;
@@ -473,10 +471,5 @@ public class Board implements Runnable{
                 card.setImageYLocation(groupOwner.getY_position());
                 break;
         }
-    }
-
-    @Override
-    public void run() {
-
     }
 }
