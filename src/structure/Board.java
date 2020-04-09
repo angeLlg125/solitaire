@@ -201,16 +201,15 @@ public class Board{
     }
     
     public void clickProvider(int x, int y){
-        
+    	
         // When provider list 1 is clicked
-        if(x >= provider1.getX_position() && x <= provider1.getX_position() + Constants.CARD_X_SIZE
-           && y >= provider1.getY_position() && y <= provider1.getY_position() + Constants.CARD_Y_SIZE){
+        if(this.isXYInsideXYRegion(x, y, this.provider1.getX_position(), this.provider1.getY_position())){
             Card card = null;
             
             if(provider1.getCards().isEmpty() && provider2.getCards().isEmpty()){
                 return;
             }
-            sound.playSound("sinnett-card.wav");
+            sound.playSound(Constants.Sounds.CLICK_PROVIDER);
 
             // TODO: Fix this issue, first card needs to be shown in this order, 123(1) 456(itr 2) remove 6, next itr swow543 
             while(!provider2.getCards().isEmpty()){
@@ -271,11 +270,10 @@ public class Board{
         for (int i = cards.getCards().size() -1; i > -1; i--) {
             card = cards.getCards().get(i);
 
-            // If we are draggin inside one card add cards to draggedCards list
-            if(x >= card.getImageXLocation() && x <= card.getImageXLocation() + Constants.CARD_X_SIZE
-               && y >= card.getImageYLocation() && y <= card.getImageYLocation() + Constants.CARD_Y_SIZE){
+            // If we are dragging inside one card add cards to draggedCards list
+            if(this.isXYInsideXYRegion(x, y, card.getImageXLocation(), card.getImageYLocation())){
                 
-                // If card not visible or if we are trying to dragg more cards than allowed in one group
+                // If card not visible or if we are trying to drag more cards than allowed in one group
                 if (!card.isVisible() || cards.getCards().size() - i > cards.getDraggedCardsAllowed()) {
                     return;
                 }
@@ -286,7 +284,7 @@ public class Board{
                 this.x_clicket_in_dragged_card = x - card.getImageXLocation();
                 this.y_clicket_in_dragged_card = y - card.getImageYLocation();
                 
-                sound.playSound("smokearrodillandose-001.wav");
+                sound.playSound(Constants.Sounds.DRAGGING);
                 // Add the card, and the cards next to that one into draggedCards list
                 int cardsSize = cards.getCards().size();
                 for (int j = i; j < cardsSize; j++) {
@@ -297,8 +295,8 @@ public class Board{
                     draggedCards.getCards().add(card);
                 }
                 
-                // Update the group owner, this will be used as a refference to the group that contains t
-                // he cards before draggin and latter, we can use this reference in order to return the cards to iriginal list
+                // Update the group owner, this will be used as a reference to the group that contains
+                // the cards before dragging and latter, we can use this reference in order to return the cards to original list
                 this.groupOwnerOfDraggedCards = cards;
 
                 return;
@@ -358,7 +356,7 @@ public class Board{
                  conditionsForGroupsCompleted(groupCompleted4, draggedCards);
              }else{
                 this.moveAllCardsToAnotherList(draggedCards, groupOwnerOfDraggedCards);
-                sound.playSound("carton-impact-5.wav");
+                sound.playSound(Constants.Sounds.STROKE);
              }
         }
     }
@@ -380,7 +378,7 @@ public class Board{
                 group.addCard(draggedCard);
                 draggedCard.setIsSelected(false);
                 draggedCards.getCards().remove();
-                sound.playSound("button-click.wav");
+                sound.playSound(Constants.Sounds.CLICK_CARD);
                 this.setNewCoordinates(draggedCard, group);
                 if(groupOwnerOfDraggedCards.getCards().size() > 0 && !groupOwnerOfDraggedCards.getCards().getFirst().isVisible()){
                     groupOwnerOfDraggedCards.getCards().getLast().setIsVisible(true);
@@ -391,7 +389,7 @@ public class Board{
                 draggedCard.setIsSelected(false);
                 draggedCards.getCards().remove();
                 this.setNewCoordinates(draggedCard, group);
-                sound.playSound("button-click.wav");
+                sound.playSound(Constants.Sounds.CLICK_CARD);
                 if(groupOwnerOfDraggedCards.getCards().size() > 0 && !groupOwnerOfDraggedCards.getCards().getFirst().isVisible()){
                     groupOwnerOfDraggedCards.getCards().getLast().setIsVisible(true);
                 }
@@ -400,7 +398,7 @@ public class Board{
                 groupOwnerOfDraggedCards.addCard(draggedCard);
                 draggedCard.setIsSelected(false);
                 draggedCards.getCards().remove();
-                sound.playSound("carton-impact-5.wav");
+                sound.playSound(Constants.Sounds.STROKE);
             }
         }else{
             this.moveAllCardsToAnotherList(draggedCards, groupOwnerOfDraggedCards);
@@ -420,13 +418,13 @@ public class Board{
                     group.getCards().getLast().isRedColor() != draggedCards.getCards().getFirst().isRedColor()){
 
                 this.moveAllCardsToAnotherList(draggedCards, group);
-                sound.playSound("button-click.wav");
+                sound.playSound(Constants.Sounds.CLICK_CARD);
                 if(groupOwnerOfDraggedCards.getCards().size() > 0 && !groupOwnerOfDraggedCards.getCards().getFirst().isVisible()){
                     groupOwnerOfDraggedCards.getCards().getLast().setIsVisible(true);
                 }
             }else if(group.getCards().isEmpty() && draggedCard.getNumber() == 13){
                 this.moveAllCardsToAnotherList(draggedCards, group);
-                sound.playSound("button-click.wav");
+                sound.playSound(Constants.Sounds.CLICK_CARD);
                 if(groupOwnerOfDraggedCards.getCards().size() > 0 && !groupOwnerOfDraggedCards.getCards().getFirst().isVisible()){
                     groupOwnerOfDraggedCards.getCards().getLast().setIsVisible(true);
                 }
@@ -454,7 +452,7 @@ public class Board{
             this.setNewCoordinates(card, target);
             target.addCard(card);
         }
-        sound.playSound("carton-impact-5.wav");
+        sound.playSound(Constants.Sounds.STROKE);
         
     }
     private void setNewCoordinates(Card card, CardsGroup groupOwner){
