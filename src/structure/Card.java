@@ -6,10 +6,8 @@
 package structure;
 
 import common.Constants;
+import common.Utils;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 
 
 /**
@@ -39,7 +37,7 @@ public class Card {
     public Card(String path){
         this.path = path;
         
-        this.readImage();
+        image = Utils.readImage(path);
     }
     
     public Card(String path, int x_location, int y_location){
@@ -47,7 +45,7 @@ public class Card {
         this.x_location = x_location;
         this.y_location = y_location;
         
-        this.readImage();
+        image = Utils.readImage(path);
     }
     
     public Card(String path, int x_location, int y_location, boolean isRedColor, int number, int group){
@@ -58,12 +56,12 @@ public class Card {
         this.number = number;
         this.group = group;
         
-        this.readImage();
+        image = Utils.readImage(path);
     }    
     
     public void setPath(String path){
         this.path = path;
-        this.readImage();
+        image = Utils.readImage(path);
     }
     
     public void setImageXLocation(int x_location){
@@ -136,14 +134,5 @@ public class Card {
     
     public int getGroup(){
         return this.group;
-    }
-    
-    private boolean readImage(){
-        try {
-           this.image = ImageIO.read(new File(this.path));
-        } catch (IOException e) {
-            return false;
-        }
-    return true;
     }
 }

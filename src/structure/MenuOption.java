@@ -5,6 +5,9 @@
  */
 package structure;
 
+import common.Utils;
+import java.awt.image.BufferedImage;
+
 /**
  *
  * @author angel
@@ -16,13 +19,16 @@ public class MenuOption implements Runnable{
     
     private int x_size, y_size;
     private boolean isActive;
+    private BufferedImage image;
 
-    public MenuOption(int x_coordinate, int y_coordinate, int x_size, int y_size) {
+    public MenuOption(int x_coordinate, int y_coordinate, int x_size, int y_size, int imageId) {
         this.x_coordinate = x_coordinate;
         this.y_coordinate = y_coordinate;
         this.x_size = x_size;
         this.y_size = y_size;
         this.isActive = false;
+        
+        image = Utils.readImage("menu_" + imageId + ".png");
     }
 
     public int getX_coordinate() {
@@ -43,6 +49,10 @@ public class MenuOption implements Runnable{
 
     public boolean isIsActive() {
         return isActive;
+    }
+    
+    public BufferedImage getImage(){
+        return this.image;
     }
 
     public void setIsActive(boolean isActive) {
