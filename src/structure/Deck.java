@@ -20,7 +20,9 @@ public class Deck {
     public static final BufferedImage NEW_GAME = Utils.readImage("new_game.png");
 
     public Deck(){
-        newGame();
+    	// newGame();
+    	newShuffleGame();
+        // this.newOrderedGame();
     }
     
     public LinkedList<Card> getCards(){
@@ -42,7 +44,14 @@ public class Deck {
                 mainStack.add(new Card(i+"-"+j+".png", 0, 0, (i%2 != 0), j, i));
             }
         }
-        Collections.shuffle(mainStack);
+    }
+    
+    public void newShuffleGame() {
+    	this.newGame();
+        Collections.shuffle(this.mainStack);
+    }
+    
+    public void newOrderedGame() {
     }
     
     public void animation(){

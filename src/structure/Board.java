@@ -11,6 +11,8 @@ import java.awt.Graphics;
 import java.awt.image.ImageObserver;
 import java.util.LinkedList;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author angel
@@ -38,6 +40,9 @@ public class Board{
     private final CardsGroup gameGroup6;
     private final CardsGroup gameGroup7;
     
+    private final CardsGroup[] gameGroups;
+    private final CardsGroup[] groupsCompleted;
+    
     private final Utils sound;
     
     public Board(){
@@ -60,6 +65,9 @@ public class Board{
         gameGroup7 = new CardsGroup(1300, 400, 7, 7, 13, "vertical");
         
         sound = new Utils();
+        
+        gameGroups = new CardsGroup[]{gameGroup1, gameGroup2, gameGroup3, gameGroup4, gameGroup5, gameGroup6, gameGroup7};
+        groupsCompleted = new CardsGroup[]{groupCompleted1, groupCompleted2, groupCompleted3, groupCompleted4};
     }
     
     public void drawBoard(Graphics g, ImageObserver observer){
@@ -355,6 +363,9 @@ public class Board{
                 this.moveAllCardsToAnotherList(draggedCards, groupOwnerOfDraggedCards);
                 sound.playSound(Constants.Sounds.STROKE);
              }
+            // look if you have won!
+            this.checkGroupCompleted(gameGroups, Constants.CHECK_GAME_GROUPS);
+            this.checkGroupCompleted(groupsCompleted, !Constants.CHECK_GAME_GROUPS);
         }
     }
 
@@ -430,7 +441,29 @@ public class Board{
             }
     }
 
-    private boolean isXYInsideXYRegion(int mouse_x, int mouse_y, int region_x, int region_y){
+    // Method that check if cards group is completed and gamer has won
+    private void checkGroupCompleted(CardsGroup[] groups, boolean isGameGroup) {
+    	int winners = 0;
+    	for(int i = 0; i < groups.length; i++) {
+    		if(groups[i].getCards().size() > 0) {
+	    		Card card = groups[i].getCards().getFirst();
+	    		boolean validateGameGroup = isGameGroup ? card.isVisible() : true;
+				if(validateGameGroup && groups[i].getCards().stream().mapToInt(Card::getNumber).sum() == 91) {
+	        		System.out.println(String.format("Usuario ha ganado! en el groupo %d", groups[i].getId()));
+	        		winners += 1;
+	        		if(winners == 4) {
+	        			break;
+	        		}
+	        	}
+    		}
+    	}
+    	if(winners == 4) {
+    		JOptionPane.showMessageDialog(null, "Ganaste!!!");
+    		return;
+    	}
+	}
+
+	private boolean isXYInsideXYRegion(int mouse_x, int mouse_y, int region_x, int region_y){
         if(mouse_x >= region_x && mouse_x <= region_x + Constants.CARD_X_SIZE
             && mouse_y >= region_y  && mouse_y <= region_y + Constants.CARD_Y_SIZE){
             return true;
