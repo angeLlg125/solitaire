@@ -5,6 +5,8 @@
  */
 package structure;
 
+import common.Utils;
+import java.awt.image.BufferedImage;
 import java.util.Collections;
 import java.util.LinkedList;
 
@@ -14,28 +16,13 @@ import java.util.LinkedList;
  */
 public class Deck {
     private LinkedList<Card> mainStack = new LinkedList<>();
-    public static final Card HIDDEN_SIDE = new Card("src/assets/images/back-1.png", 0, 0);
+    public static final BufferedImage HIDDEN_SIDE = Utils.readImage("back-1.png");
+    public static final BufferedImage NEW_GAME = Utils.readImage("new_game.png");
 
     public Deck(){
-    	// this.ascendent();
-        this.shuffle();
-        // this.alternateColorOrder();
-    }
-    
-    private void shuffle() {
-    	this.ascendent();
-        Collections.shuffle(this.mainStack);
-    }
-    
-    private void ascendent() {
-    	for (int i = 1; i < 5; i++) {
-            for (int j = 1; j < 14; j++) {
-                this.mainStack.add(new Card("src/assets/images/"+i+"-"+j+".png", 0, 0, (i%2 != 0), j, i));
-            }
-        }
-    }
-    
-    private void alternateColorOrder() {
+    	// newGame();
+    	newShuffleGame();
+        // this.newOrderedGame();
     }
     
     public LinkedList<Card> getCards(){
@@ -51,7 +38,20 @@ public class Deck {
     }
     
     public void newGame(){
-        
+        mainStack.clear();
+        for (int i = 1; i < 5; i++) {
+            for (int j = 1; j < 14; j++) {
+                mainStack.add(new Card(i+"-"+j+".png", 0, 0, (i%2 != 0), j, i));
+            }
+        }
+    }
+    
+    private void newShuffleGame() {
+    	this.newGame();
+        Collections.shuffle(this.mainStack);
+    }
+    
+    private void newOrderedGame() {
     }
     
     public void animation(){

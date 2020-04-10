@@ -6,6 +6,7 @@
 package forms;
 
 import common.Constants;
+import common.Utils;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -20,8 +21,8 @@ import structure.Menu;
  * @author angel
  */
 public class MyCanvas extends JPanel implements  MouseMotionListener, MouseListener{
-    
-    private final Board board = new Board();
+
+    private Board board = new Board();
     private final Deck deck = new Deck();
     private final Menu menu = new Menu();
     
@@ -64,9 +65,11 @@ public class MyCanvas extends JPanel implements  MouseMotionListener, MouseListe
         // If we click menu
         if(me.getX() <= menu.getSize()){
             if(menu.isIsActive()){
-                menu.clickOption(me.getX(), me.getY(), this);
+                this.validateMenuAnswer(this.menu.clickOption(me.getX(), me.getY(), this));
+            }else{
+                menu.showHideMenu(this);
+                Utils.playSound(Constants.Sounds.MENU_CHANGE);
             }
-            menu.showHideMenu(this);
         }
         if(!menu.isIsActive()){
             board.clickProvider(me.getX(), me.getY());
@@ -75,6 +78,21 @@ public class MyCanvas extends JPanel implements  MouseMotionListener, MouseListe
         }
         
         repaint();
+    }
+    
+    private void validateMenuAnswer(int response){
+        switch(response){
+            case 0:
+                deck.newGame();
+                board = new Board();
+                board.addCards(deck.getCards());
+                Utils.playSound(Constants.Sounds.MIX_DECK);
+                repaint();
+                break;
+            default:
+                Utils.playSound(Constants.Sounds.MENU_CHANGE);
+                break;
+        } 
     }
 
     @Override
