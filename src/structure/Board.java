@@ -5,7 +5,7 @@
  */
 package structure;
 
-import common.Sound;
+import common.Utils;
 import common.Constants;
 import java.awt.Graphics;
 import java.awt.image.ImageObserver;
@@ -38,7 +38,7 @@ public class Board{
     private final CardsGroup gameGroup6;
     private final CardsGroup gameGroup7;
     
-    private final Sound sound;
+    private final Utils sound;
     
     public Board(){
         draggedCards = new CardsGroup(0, 0, 0, 0, 13, "vertical");
@@ -59,7 +59,7 @@ public class Board{
         gameGroup6 = new CardsGroup(1100, 400, 6, 6, 13, "vertical");
         gameGroup7 = new CardsGroup(1300, 400, 7, 7, 13, "vertical");
         
-        sound = new Sound();
+        sound = new Utils();
     }
     
     public void drawBoard(Graphics g, ImageObserver observer){
@@ -111,7 +111,7 @@ public class Board{
                         card.getImageXSize(), card.getImageYSize(), observer);
             }else{
                 // If the card is hidden, show the image that represents a card not available
-                g.drawImage(Deck.HIDDEN_SIDE.getImage(), card.getImageXLocation(), card.getImageYLocation(), 
+                g.drawImage(Deck.HIDDEN_SIDE, card.getImageXLocation(), card.getImageYLocation(), 
                         card.getImageXSize(), card.getImageYSize(), observer);
             }
         }
@@ -180,21 +180,18 @@ public class Board{
     private int setInitialCardData(LinkedList<Card> cards, CardsGroup cardGroup, int currentStack){
         Card currentCard;
         // When the last card is going to be added, then make card visible
+        currentCard = cards.remove();
+        currentCard.setImageXLocation(cardGroup.getX_position());
+        currentCard.setImageYLocation(cardGroup.getY_position() + cardGroup.getCards().size() * Constants.SPACE_BETWEEN_CARDS_IN_LIST);
         if(cardGroup.getCards().size() + 1 == cardGroup.getLimit()){
-            currentCard = cards.remove();
+
             currentCard.setIsVisible(true);
-            currentCard.setImageXLocation(cardGroup.getX_position());
-            currentCard.setImageYLocation(cardGroup.getY_position() + cardGroup.getCards().size() * Constants.SPACE_BETWEEN_CARDS_IN_LIST);
-            
             cardGroup.addCard(currentCard);
             currentStack++;
         }else{
             // Add the card hidden
-            currentCard = cards.remove();
+
             currentCard.setIsVisible(false);
-            currentCard.setImageXLocation(cardGroup.getX_position());
-            currentCard.setImageYLocation(cardGroup.getY_position() + cardGroup.getCards().size()* Constants.SPACE_BETWEEN_CARDS_IN_LIST);
-            
             cardGroup.addCard(currentCard);
         }
         return currentStack;

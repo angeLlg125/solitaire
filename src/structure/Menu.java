@@ -6,8 +6,10 @@
 package structure;
 
 import common.Constants;
+import common.Utils;
 import forms.MyCanvas;
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,15 +24,17 @@ public class Menu implements Runnable{
     
     private boolean isActive;
     private MyCanvas myCanvas;
+    public static final BufferedImage LEFT_ARROW = Utils.readImage("left_arrow.png");
+    public static final BufferedImage RIGHT_ARROW = Utils.readImage("right_arrow.png");
 
     public Menu() {
         this.size = Constants.MENU_MIN_LENGT;
         this.isActive = false;
         
-        options = new MenuOption[4];
+        options = new MenuOption[1];
         
         for (int i = 0; i < options.length; i++) {
-            options[i] = new MenuOption(this.size - 200, 150 * (i + 1) + Constants.MENU_MIN_LENGT * i, 150, 150);
+            options[i] = new MenuOption(this.size - 200, 150 * (i + 1) + Constants.MENU_MIN_LENGT * i, 150, 150, i);
         }
     }
 
@@ -64,40 +68,36 @@ public class Menu implements Runnable{
     }
     
     public void drawMenu(Graphics g){
-        g.setColor(Constants.menuColor);
+        g.setColor(Constants.groupsColor);
         
         g.fillRect(0, 0, this.getSize(), Constants.WINDOW_Y_SIZE);
 
         MenuOption option;
         for (int i = 0; i < options.length; i++) {
             option = options[i];
-            if(option.isIsActive()){
-                g.setColor(Constants.selectedCardColor);
-                g.fillRect(this.size - option.getX_size() - Constants.MENU_MIN_LENGT, option.getY_size() * (i + 1) + Constants.MENU_MIN_LENGT * i, option.getX_size(), option.getY_size());
-                g.setColor(Constants.groupsColor);
-
-                // option.setIsActive(false);
-            }else{
-                g.setColor(Constants.optionColor);
-                g.fillRect(this.size - option.getX_size() - Constants.MENU_MIN_LENGT, option.getY_size() * (i + 1) + Constants.MENU_MIN_LENGT * i, option.getX_size(), option.getY_size());
-            }
+            g.drawImage(option.getImage(), this.size - option.getX_size() - Constants.MENU_MIN_LENGT, option.getY_size() * (i + 1) + Constants.MENU_MIN_LENGT * i, option.getX_size(), option.getY_size(), myCanvas);
+        }
+        if(this.isActive){
+            g.drawImage(LEFT_ARROW, this.size - Constants.MENU_MIN_LENGT, 0, 40, 40, myCanvas);
+        }else{
+            g.drawImage(RIGHT_ARROW, this.size - Constants.MENU_MIN_LENGT, 0, 40, 40, myCanvas);
         }
     }
     
-    public void clickOption(int x, int y, MyCanvas my){
+    public int clickOption(int x, int y, MyCanvas my){
         MenuOption option;
         for (int i = 0; i < options.length; i++) {
             option = options[i];
             if(x > this.size - option.getX_size() - Constants.MENU_MIN_LENGT && x < this.size - Constants.MENU_MIN_LENGT
                     && y > (option.getY_size() * (i + 1) + Constants.MENU_MIN_LENGT * i) && y < (option.getY_size() * (i + 1) + Constants.MENU_MIN_LENGT * i) + option.getY_size()){
-
+                
                 option.setIsActive(true);
-
-                this.showHideMenu(my);
-                return;
+                return i;
             }
         }
+        //Utils.playSound(Constants.Sounds.MENU_CHANGE);
         this.showHideMenu(my);
+        return -1;
     }
 
     @Override
