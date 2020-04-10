@@ -46,12 +46,12 @@ public class Deck {
         }
     }
     
-    private void newShuffleGame() {
+    public void newShuffleGame() {
     	this.newGame();
         Collections.shuffle(this.mainStack);
     }
     
-    private void newOrderedGame() {
+    public void newOrderedGame() {
     }
     
     public void animation(){

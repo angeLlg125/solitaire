@@ -83,7 +83,7 @@ public class MyCanvas extends JPanel implements  MouseMotionListener, MouseListe
     private void validateMenuAnswer(int response){
         switch(response){
             case 0:
-                deck.newGame();
+                deck.newShuffleGame();
                 board = new Board();
                 board.addCards(deck.getCards());
                 Utils.playSound(Constants.Sounds.MIX_DECK);
