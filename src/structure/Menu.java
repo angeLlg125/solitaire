@@ -95,7 +95,6 @@ public class Menu implements Runnable{
                 return i;
             }
         }
-        //Utils.playSound(Constants.Sounds.MENU_CHANGE);
         this.showHideMenu(my);
         return -1;
     }
