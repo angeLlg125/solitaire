@@ -29,6 +29,8 @@ public class Constants {
     public static int MENU_MIN_LENGT = 40;
     public static int MENU_MAX_LENGT = 200;
     
+    public static boolean CHECK_GAME_GROUPS = true;
+    
     public static class Sounds {
     	public static String CARD_OK = "button-click.wav";
     	public static String STROKE = "carton-impact-5.wav";
