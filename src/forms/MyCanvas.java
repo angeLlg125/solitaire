@@ -22,7 +22,7 @@ import structure.Menu;
  */
 public class MyCanvas extends JPanel implements  MouseMotionListener, MouseListener{
 
-    private Board board = new Board();
+    private Board board = new Board(this);
     private final Deck deck = new Deck();
     private final Menu menu = new Menu();
     
@@ -84,7 +84,7 @@ public class MyCanvas extends JPanel implements  MouseMotionListener, MouseListe
         switch(response){
             case 0:
                 deck.newShuffleGame();
-                board = new Board();
+                board = new Board(this);
                 board.addCards(deck.getCards());
                 Utils.playSound(Constants.Sounds.MIX_DECK);
                 repaint();
@@ -114,4 +114,18 @@ public class MyCanvas extends JPanel implements  MouseMotionListener, MouseListe
     @Override
     public void mouseExited(MouseEvent me) {
     }
+    /*
+    public void adjustSize(int width, int height){
+        
+        Constants.CARD_X_SIZE = width * 120/ 1500;
+        Constants.CARD_Y_SIZE = height * 180 / 1000;
+        Constants.SPACE_BETWEEN_GROUPS = height * 200 / 1500;
+        
+        Constants.WINDOW_X_SIZE = (int)width;
+        Constants.WINDOW_Y_SIZE = (int)height;
+        
+
+        this.setSize((int)width, (int)height);
+        this.repaint();
+    }*/
 }

@@ -23,10 +23,10 @@ import sun.audio.AudioStream;
 public class Utils {
     
     public static void playSound(String soundName) {
-    String gongFile = "src/assets/sound/"+soundName;
+    String gongFile = "sound/"+soundName;
         InputStream in;
         try {
-            in = new FileInputStream(gongFile);
+            in = Utils.class.getClassLoader().getResourceAsStream(gongFile);
             AudioStream audioStream = new AudioStream(in);
 
             AudioPlayer.player.start(audioStream);
@@ -37,9 +37,9 @@ public class Utils {
     
     public static BufferedImage readImage(String path){
         try {
-           return ImageIO.read(new File("src/assets/images/"+path));
+           return ImageIO.read(Utils.class.getClassLoader().getResourceAsStream("images/"+path));
         } catch (IOException e) {
         }
-        return null;
+		return null;
     }
 }

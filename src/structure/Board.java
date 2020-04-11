@@ -7,6 +7,7 @@ package structure;
 
 import common.Utils;
 import common.Constants;
+import forms.MyCanvas;
 import java.awt.Graphics;
 import java.awt.image.ImageObserver;
 import java.util.LinkedList;
@@ -44,8 +45,10 @@ public class Board{
     private final CardsGroup[] groupsCompleted;
     
     private final Utils sound;
-    
-    public Board(){
+    private final MyCanvas myCanvas;
+
+    public Board(MyCanvas myCanvas){
+        this.myCanvas = myCanvas;
         draggedCards = new CardsGroup(0, 0, 0, 0, 13, "vertical");
 
         provider1 = new CardsGroup(100, 20, 0, -1, 0, "onTop");
@@ -63,7 +66,7 @@ public class Board{
         gameGroup5 = new CardsGroup(900, 400, 5, 5, 13, "vertical");
         gameGroup6 = new CardsGroup(1100, 400, 6, 6, 13, "vertical");
         gameGroup7 = new CardsGroup(1300, 400, 7, 7, 13, "vertical");
-        
+       
         sound = new Utils();
         
         gameGroups = new CardsGroup[]{gameGroup1, gameGroup2, gameGroup3, gameGroup4, gameGroup5, gameGroup6, gameGroup7};
@@ -73,21 +76,21 @@ public class Board{
     public void drawBoard(Graphics g, ImageObserver observer){
         g.setColor(Constants.groupsColor);
 
-        g.fillRect(provider1.getX_position(), provider1.getY_position(), provider1.getX_size(), provider1.getY_size());
-        g.fillRect(provider2.getX_position(), provider2.getY_position(), provider2.getX_size(), provider2.getY_size());
+        g.fillRect(provider1.getX_position(), provider1.getY_position(), Constants.CARD_X_SIZE, Constants.CARD_Y_SIZE);
+        g.fillRect(provider2.getX_position(), provider2.getY_position(), Constants.CARD_X_SIZE, Constants.CARD_Y_SIZE);
         
-        g.fillRect(groupCompleted1.getX_position(), groupCompleted1.getY_position(), groupCompleted1.getX_size(), groupCompleted1.getY_size());
-        g.fillRect(groupCompleted2.getX_position(), groupCompleted2.getY_position(), groupCompleted2.getX_size(), groupCompleted2.getY_size());
-        g.fillRect(groupCompleted3.getX_position(), groupCompleted3.getY_position(), groupCompleted3.getX_size(), groupCompleted3.getY_size());
-        g.fillRect(groupCompleted4.getX_position(), groupCompleted4.getY_position(), groupCompleted4.getX_size(), groupCompleted4.getY_size());
+        g.fillRect(groupCompleted1.getX_position(), groupCompleted1.getY_position(), Constants.CARD_X_SIZE, Constants.CARD_Y_SIZE);
+        g.fillRect(groupCompleted2.getX_position(), groupCompleted2.getY_position(), Constants.CARD_X_SIZE, Constants.CARD_Y_SIZE);
+        g.fillRect(groupCompleted3.getX_position(), groupCompleted3.getY_position(), Constants.CARD_X_SIZE, Constants.CARD_Y_SIZE);
+        g.fillRect(groupCompleted4.getX_position(), groupCompleted4.getY_position(), Constants.CARD_X_SIZE, Constants.CARD_Y_SIZE);
         
-        g.fillRect(gameGroup1.getX_position(), gameGroup1.getY_position(), gameGroup1.getX_size(), gameGroup1.getY_size());
-        g.fillRect(gameGroup2.getX_position(), gameGroup2.getY_position(), gameGroup2.getX_size(), gameGroup2.getY_size());
-        g.fillRect(gameGroup3.getX_position(), gameGroup3.getY_position(), gameGroup3.getX_size(), gameGroup3.getY_size());
-        g.fillRect(gameGroup4.getX_position(), gameGroup4.getY_position(), gameGroup4.getX_size(), gameGroup4.getY_size());        
-        g.fillRect(gameGroup5.getX_position(), gameGroup5.getY_position(), gameGroup5.getX_size(), gameGroup5.getY_size());
-        g.fillRect(gameGroup6.getX_position(), gameGroup6.getY_position(), gameGroup6.getX_size(), gameGroup6.getY_size());
-        g.fillRect(gameGroup7.getX_position(), gameGroup7.getY_position(), gameGroup7.getX_size(), gameGroup7.getY_size());
+        g.fillRect(gameGroup1.getX_position(), gameGroup1.getY_position(), Constants.CARD_X_SIZE, Constants.CARD_Y_SIZE);
+        g.fillRect(gameGroup2.getX_position(), gameGroup2.getY_position(), Constants.CARD_X_SIZE, Constants.CARD_Y_SIZE);
+        g.fillRect(gameGroup3.getX_position(), gameGroup3.getY_position(), Constants.CARD_X_SIZE, Constants.CARD_Y_SIZE);
+        g.fillRect(gameGroup4.getX_position(), gameGroup4.getY_position(), Constants.CARD_X_SIZE, Constants.CARD_Y_SIZE);  
+        g.fillRect(gameGroup5.getX_position(), gameGroup5.getY_position(), Constants.CARD_X_SIZE, Constants.CARD_Y_SIZE);
+        g.fillRect(gameGroup6.getX_position(), gameGroup6.getY_position(), Constants.CARD_X_SIZE, Constants.CARD_Y_SIZE);
+        g.fillRect(gameGroup7.getX_position(), gameGroup7.getY_position(), Constants.CARD_X_SIZE, Constants.CARD_Y_SIZE);
         
         this.drawCards(provider1.getCards(), g, observer);
         this.drawCards(provider2.getCards(), g, observer);
@@ -116,11 +119,11 @@ public class Board{
             // If the card is visible, show the card
             if(card.isVisible()){
                 g.drawImage(card.getImage(), card.getImageXLocation(), card.getImageYLocation(), 
-                        card.getImageXSize(), card.getImageYSize(), observer);
+                        Constants.CARD_X_SIZE, Constants.CARD_Y_SIZE, observer);
             }else{
                 // If the card is hidden, show the image that represents a card not available
                 g.drawImage(Deck.HIDDEN_SIDE, card.getImageXLocation(), card.getImageYLocation(), 
-                        card.getImageXSize(), card.getImageYSize(), observer);
+                        Constants.CARD_X_SIZE, Constants.CARD_Y_SIZE, observer);
             }
         }
     }
@@ -133,9 +136,12 @@ public class Board{
         for (int i = 0; i < cards.size(); i++) {
             card = cards.get(i);
 
-            g.drawImage(card.getImage(), initial.getImageXLocation(), initial.getImageYLocation() + i * Constants.SPACE_BETWEEN_CARDS_IN_LIST, 
-                    card.getImageXSize(), card.getImageYSize(), observer);
-            g.fillRect(initial.getImageXLocation(), initial.getImageYLocation() + i * Constants.SPACE_BETWEEN_CARDS_IN_LIST, card.getImageXSize(), card.getImageYSize());
+            g.setColor(Constants.shadow);
+            g.fillRect(initial.getImageXLocation() + Constants.SHADOW_DISTANCE, initial.getImageYLocation() + i * Constants.SPACE_BETWEEN_CARDS_IN_LIST + Constants.SHADOW_DISTANCE, Constants.CARD_X_SIZE + Constants.SHADOW_DISTANCE, Constants.CARD_Y_SIZE + Constants.SHADOW_DISTANCE);
+            g.drawImage(card.getImage(), initial.getImageXLocation()-Constants.CARD_DRAGG_SIZE/2, initial.getImageYLocation() + i * Constants.SPACE_BETWEEN_CARDS_IN_LIST-Constants.CARD_DRAGG_SIZE/2, 
+                    Constants.CARD_X_SIZE+Constants.CARD_DRAGG_SIZE, Constants.CARD_Y_SIZE + Constants.CARD_DRAGG_SIZE, observer);
+            //g.setColor(Constants.groupsColor);
+            //g.fillRect(initial.getImageXLocation()-Constants.CARD_DRAGG_SIZE/2, initial.getImageYLocation() + i * Constants.SPACE_BETWEEN_CARDS_IN_LIST-Constants.CARD_DRAGG_SIZE/2, Constants.CARD_X_SIZE + Constants.CARD_DRAGG_SIZE, Constants.CARD_Y_SIZE +Constants.CARD_DRAGG_SIZE);
         }
     }
     
@@ -363,9 +369,6 @@ public class Board{
                 this.moveAllCardsToAnotherList(draggedCards, groupOwnerOfDraggedCards);
                 sound.playSound(Constants.Sounds.STROKE);
              }
-            // look if you have won!
-            this.checkGroupCompleted(gameGroups, Constants.CHECK_GAME_GROUPS);
-            this.checkGroupCompleted(groupsCompleted, !Constants.CHECK_GAME_GROUPS);
         }
     }
 
@@ -381,17 +384,8 @@ public class Board{
 
             if(group.getCards().size() > 0 && 
                     group.getCards().getLast().getNumber()+1 == draggedCard.getNumber() && 
-                    group.getCards().getLast().getGroup() == draggedCard.getGroup()){
-
-                group.addCard(draggedCard);
-                draggedCard.setIsSelected(false);
-                draggedCards.getCards().remove();
-                sound.playSound(Constants.Sounds.CARD_OK);
-                this.setNewCoordinates(draggedCard, group);
-                if(groupOwnerOfDraggedCards.getCards().size() > 0 && !groupOwnerOfDraggedCards.getCards().getFirst().isVisible()){
-                    groupOwnerOfDraggedCards.getCards().getLast().setIsVisible(true);
-                }
-            }else if(group.getCards().isEmpty() && draggedCard.getNumber() == 1){
+                    group.getCards().getLast().getGroup() == draggedCard.getGroup()
+                || group.getCards().isEmpty() && draggedCard.getNumber() == 1){
 
                 group.addCard(draggedCard);
                 draggedCard.setIsSelected(false);
@@ -401,6 +395,9 @@ public class Board{
                 if(groupOwnerOfDraggedCards.getCards().size() > 0 && !groupOwnerOfDraggedCards.getCards().getFirst().isVisible()){
                     groupOwnerOfDraggedCards.getCards().getLast().setIsVisible(true);
                 }
+                // look if you have won!
+                this.checkGroupCompleted(gameGroups, Constants.CHECK_GAME_GROUPS);
+                this.checkGroupCompleted(groupsCompleted, !Constants.CHECK_GAME_GROUPS);   
             }else{
                 this.setNewCoordinates(draggedCard, groupOwnerOfDraggedCards);
                 groupOwnerOfDraggedCards.addCard(draggedCard);
@@ -423,19 +420,17 @@ public class Board{
             }
             if(group.getCards().size() > 0 && 
                     group.getCards().getLast().getNumber()-1 == draggedCard.getNumber() && 
-                    group.getCards().getLast().isRedColor() != draggedCards.getCards().getFirst().isRedColor()){
-
+                    group.getCards().getLast().isRedColor() != draggedCards.getCards().getFirst().isRedColor()
+                || group.getCards().isEmpty() && draggedCard.getNumber() == 13){
+                
                 this.moveAllCardsToAnotherList(draggedCards, group);
                 sound.playSound(Constants.Sounds.CARD_OK);
                 if(groupOwnerOfDraggedCards.getCards().size() > 0 && !groupOwnerOfDraggedCards.getCards().getFirst().isVisible()){
                     groupOwnerOfDraggedCards.getCards().getLast().setIsVisible(true);
                 }
-            }else if(group.getCards().isEmpty() && draggedCard.getNumber() == 13){
-                this.moveAllCardsToAnotherList(draggedCards, group);
-                sound.playSound(Constants.Sounds.CARD_OK);
-                if(groupOwnerOfDraggedCards.getCards().size() > 0 && !groupOwnerOfDraggedCards.getCards().getFirst().isVisible()){
-                    groupOwnerOfDraggedCards.getCards().getLast().setIsVisible(true);
-                }
+                // look if you have won!
+                this.checkGroupCompleted(gameGroups, Constants.CHECK_GAME_GROUPS);
+                this.checkGroupCompleted(groupsCompleted, !Constants.CHECK_GAME_GROUPS);                
             }else{
                 moveAllCardsToAnotherList(draggedCards, groupOwnerOfDraggedCards);
             }
@@ -463,12 +458,9 @@ public class Board{
     	}
 	}
 
-	private boolean isXYInsideXYRegion(int mouse_x, int mouse_y, int region_x, int region_y){
-        if(mouse_x >= region_x && mouse_x <= region_x + Constants.CARD_X_SIZE
-            && mouse_y >= region_y  && mouse_y <= region_y + Constants.CARD_Y_SIZE){
-            return true;
-        }
-        return false;
+    private boolean isXYInsideXYRegion(int mouse_x, int mouse_y, int region_x, int region_y){
+        return mouse_x >= region_x && mouse_x <= region_x + Constants.CARD_X_SIZE
+                && mouse_y >= region_y  && mouse_y <= region_y + Constants.CARD_Y_SIZE;
     }
 
     private void moveAllCardsToAnotherList(CardsGroup source, CardsGroup target){

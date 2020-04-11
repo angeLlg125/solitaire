@@ -73,8 +73,13 @@ public class Menu implements Runnable{
         g.fillRect(0, 0, this.getSize(), Constants.WINDOW_Y_SIZE);
 
         MenuOption option;
+        g.setColor(Constants.shadow);
         for (int i = 0; i < options.length; i++) {
             option = options[i];
+            if (this.isActive) {
+                g.fillRect((this.size - option.getX_size() - Constants.MENU_MIN_LENGT) + Constants.SHADOW_DISTANCE, (option.getY_size() * (i + 1) + Constants.MENU_MIN_LENGT * i) + Constants.SHADOW_DISTANCE, option.getX_size(), option.getY_size());
+            }
+
             g.drawImage(option.getImage(), this.size - option.getX_size() - Constants.MENU_MIN_LENGT, option.getY_size() * (i + 1) + Constants.MENU_MIN_LENGT * i, option.getX_size(), option.getY_size(), myCanvas);
         }
         if(this.isActive){

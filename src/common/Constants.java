@@ -14,13 +14,16 @@ import java.awt.Color;
 public class Constants {
     public static int CARD_X_SIZE = 120;
     public static int CARD_Y_SIZE = 180;
+    public static int CARD_DRAGG_SIZE = 20;
+    public static int SHADOW_DISTANCE = 12;
     
     public static int WINDOW_X_SIZE = 1500;
     public static int WINDOW_Y_SIZE = 1000;
     
     public static Color groupsColor = new Color(80, 90, 70, 150);
     public static Color backGroundColor = new Color(51, 161, 73);
-    public static Color selectedCardColor = new Color(227, 98, 106, 100);
+    public static Color selectedCardColor = new Color(69, 136, 245, 1);
+    public static Color shadow = new Color(30, 30, 30, 150);
     
     public static int SPACE_BETWEEN_CARDS_IN_LIST = 30;
     public static int SPACE_BETWEEN_GROUPS = 200;

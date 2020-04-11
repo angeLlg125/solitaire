@@ -5,6 +5,13 @@
  */
 package forms;
 
+import common.Constants;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+
 /**
  *
  * @author angel
@@ -14,8 +21,23 @@ public class MainForm extends javax.swing.JFrame {
     /**
      * Creates new form MainForm
      */
+    MyCanvas canvas = new MyCanvas();
+
     public MainForm() {
         initComponents();
+        // Define canvas components
+        canvas.setSize(Constants.WINDOW_X_SIZE, Constants.WINDOW_Y_SIZE);
+        canvas.setBackground(Color.yellow);
+
+        this.pack();
+        this.setVisible(true);
+        this.setResizable(false);
+
+        this.setSize(Constants.WINDOW_X_SIZE, Constants.WINDOW_Y_SIZE);
+        Dimension dimension = new Dimension(500, 500);
+        this.setMinimumSize(dimension);
+        this.add(canvas);
+        //this.addComponentListener(this);
     }
 
     /**
@@ -77,6 +99,31 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
     }
+
+    /*@Override
+    public void componentResized(ComponentEvent ce) {
+        screenSize = this.getSize(screenSize);
+        double width = screenSize.getWidth();
+        double height = screenSize.getHeight();
+        
+        canvas.adjustSize((int)width, (int)height);
+    }
+
+    @Override
+    public void componentMoved(ComponentEvent ce) {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+    }
+
+    @Override
+    public void componentShown(ComponentEvent ce) {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void componentHidden(ComponentEvent ce) {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }*/
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables

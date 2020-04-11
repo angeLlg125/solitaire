@@ -17,7 +17,7 @@ import java.util.LinkedList;
 public class Deck {
     private LinkedList<Card> mainStack = new LinkedList<>();
     public static final BufferedImage HIDDEN_SIDE = Utils.readImage("back-1.png");
-    public static final BufferedImage NEW_GAME = Utils.readImage("new_game.png");
+    //public static final BufferedImage NEW_GAME = Utils.readImage("new_game.png");
 
     public Deck(){
     	// newGame();
