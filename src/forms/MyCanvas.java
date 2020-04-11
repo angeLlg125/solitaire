@@ -92,7 +92,7 @@ public class MyCanvas extends JPanel implements  MouseMotionListener, MouseListe
             default:
                 Utils.playSound(Constants.Sounds.MENU_CHANGE);
                 break;
-        } 
+        }
     }
 
     @Override

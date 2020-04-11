@@ -7,6 +7,7 @@ package structure;
 
 import common.Constants;
 import java.util.LinkedList;
+import java.util.stream.Stream;
 
 /**
  *
@@ -50,6 +51,10 @@ public class CardsGroup {
         return cards;
     }
 
+    public Stream<Card> cards() {
+        return cards.stream();
+    }
+    
     public int getX_position() {
         return x_position;
     }
