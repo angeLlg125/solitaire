@@ -6,19 +6,21 @@
 package common;
 
 import java.awt.Color;
+import java.awt.Toolkit;
 
 /**
  *
  * @author angel
  */
 public class Constants {
+	
     public static int CARD_X_SIZE = 120;
     public static int CARD_Y_SIZE = 180;
     public static int CARD_DRAGG_SIZE = 20;
     public static int SHADOW_DISTANCE = 12;
     
-    public static int WINDOW_X_SIZE = 1500;
-    public static int WINDOW_Y_SIZE = 1000;
+    public static int WINDOW_X_SIZE = Toolkit.getDefaultToolkit().getScreenSize().width;
+    public static int WINDOW_Y_SIZE = Toolkit.getDefaultToolkit().getScreenSize().height;
     
     public static Color groupsColor = new Color(80, 90, 70, 150);
     public static Color backGroundColor = new Color(51, 161, 73);

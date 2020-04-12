@@ -11,6 +11,8 @@ import forms.MyCanvas;
 import java.awt.Graphics;
 import java.awt.image.ImageObserver;
 import java.util.LinkedList;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import javax.swing.JOptionPane;
 
@@ -41,10 +43,10 @@ public class Board{
     private final CardsGroup gameGroup6;
     private final CardsGroup gameGroup7;
     
-    private final CardsGroup[] gameGroups;
-    private final CardsGroup[] groupsCompleted;
+    private final Supplier<Stream<CardsGroup>> gameGroups;
+    private final Supplier<Stream<CardsGroup>> groupsCompleted;
+    private final Supplier<Stream<CardsGroup>> providers;
     
-    private final Utils sound;
     private final MyCanvas myCanvas;
 
     public Board(MyCanvas myCanvas){
@@ -67,65 +69,42 @@ public class Board{
         gameGroup6 = new CardsGroup(1100, 400, 6, 6, 13, "vertical");
         gameGroup7 = new CardsGroup(1300, 400, 7, 7, 13, "vertical");
        
-        sound = new Utils();
-        
-        gameGroups = new CardsGroup[]{gameGroup1, gameGroup2, gameGroup3, gameGroup4, gameGroup5, gameGroup6, gameGroup7};
-        groupsCompleted = new CardsGroup[]{groupCompleted1, groupCompleted2, groupCompleted3, groupCompleted4};
+        gameGroups = () -> Stream.of(gameGroup1, gameGroup2, gameGroup3, gameGroup4, gameGroup5, gameGroup6, gameGroup7);
+        groupsCompleted = () -> Stream.of(groupCompleted1, groupCompleted2, groupCompleted3, groupCompleted4);
+        providers = () -> Stream.of(provider1, provider2);
     }
     
     public void drawBoard(Graphics g, ImageObserver observer){
         g.setColor(Constants.groupsColor);
 
-        g.fillRect(provider1.getX_position(), provider1.getY_position(), Constants.CARD_X_SIZE, Constants.CARD_Y_SIZE);
-        g.fillRect(provider2.getX_position(), provider2.getY_position(), Constants.CARD_X_SIZE, Constants.CARD_Y_SIZE);
+        providers.get().forEach(group -> {
+        	g.fillRect(group.getX_position(), group.getY_position(), Constants.CARD_X_SIZE, Constants.CARD_Y_SIZE);
+        	this.drawCards(group.cards(), g, observer);
+        });
+
+        groupsCompleted.get().forEach(group -> {
+        	g.fillRect(group.getX_position(), group.getY_position(), Constants.CARD_X_SIZE, Constants.CARD_Y_SIZE);
+        	this.drawCards(group.cards(), g, observer);
+        });
         
-        g.fillRect(groupCompleted1.getX_position(), groupCompleted1.getY_position(), Constants.CARD_X_SIZE, Constants.CARD_Y_SIZE);
-        g.fillRect(groupCompleted2.getX_position(), groupCompleted2.getY_position(), Constants.CARD_X_SIZE, Constants.CARD_Y_SIZE);
-        g.fillRect(groupCompleted3.getX_position(), groupCompleted3.getY_position(), Constants.CARD_X_SIZE, Constants.CARD_Y_SIZE);
-        g.fillRect(groupCompleted4.getX_position(), groupCompleted4.getY_position(), Constants.CARD_X_SIZE, Constants.CARD_Y_SIZE);
-        
-        g.fillRect(gameGroup1.getX_position(), gameGroup1.getY_position(), Constants.CARD_X_SIZE, Constants.CARD_Y_SIZE);
-        g.fillRect(gameGroup2.getX_position(), gameGroup2.getY_position(), Constants.CARD_X_SIZE, Constants.CARD_Y_SIZE);
-        g.fillRect(gameGroup3.getX_position(), gameGroup3.getY_position(), Constants.CARD_X_SIZE, Constants.CARD_Y_SIZE);
-        g.fillRect(gameGroup4.getX_position(), gameGroup4.getY_position(), Constants.CARD_X_SIZE, Constants.CARD_Y_SIZE);  
-        g.fillRect(gameGroup5.getX_position(), gameGroup5.getY_position(), Constants.CARD_X_SIZE, Constants.CARD_Y_SIZE);
-        g.fillRect(gameGroup6.getX_position(), gameGroup6.getY_position(), Constants.CARD_X_SIZE, Constants.CARD_Y_SIZE);
-        g.fillRect(gameGroup7.getX_position(), gameGroup7.getY_position(), Constants.CARD_X_SIZE, Constants.CARD_Y_SIZE);
-        
-        this.drawCards(provider1.getCards(), g, observer);
-        this.drawCards(provider2.getCards(), g, observer);
-        
-        this.drawCards(groupCompleted1.getCards(), g, observer);
-        this.drawCards(groupCompleted2.getCards(), g, observer);
-        this.drawCards(groupCompleted3.getCards(), g, observer);
-        this.drawCards(groupCompleted4.getCards(), g, observer);
-        
-        this.drawCards(gameGroup1.getCards(), g, observer);
-        this.drawCards(gameGroup2.getCards(), g, observer);
-        this.drawCards(gameGroup3.getCards(), g, observer);
-        this.drawCards(gameGroup4.getCards(), g, observer);
-        this.drawCards(gameGroup5.getCards(), g, observer);
-        this.drawCards(gameGroup6.getCards(), g, observer);
-        this.drawCards(gameGroup7.getCards(), g, observer);
+        gameGroups.get().forEach(group -> {
+        	g.fillRect(group.getX_position(), group.getY_position(), Constants.CARD_X_SIZE, Constants.CARD_Y_SIZE);
+        	this.drawCards(group.cards(), g, observer);
+        });
         
         // dragged cards should be draw at the end
         this.drawDraggedCards(draggedCards.getCards(), g, observer);
     }
     
-    private void drawCards(LinkedList<Card> cards, Graphics g, ImageObserver observer){
-        Card card;
-        for (int i = 0; i < cards.size(); i++) {
-            card = cards.get(i);
-            // If the card is visible, show the card
-            if(card.isVisible()){
-                g.drawImage(card.getImage(), card.getImageXLocation(), card.getImageYLocation(), 
-                        Constants.CARD_X_SIZE, Constants.CARD_Y_SIZE, observer);
-            }else{
-                // If the card is hidden, show the image that represents a card not available
-                g.drawImage(Deck.HIDDEN_SIDE, card.getImageXLocation(), card.getImageYLocation(), 
-                        Constants.CARD_X_SIZE, Constants.CARD_Y_SIZE, observer);
-            }
-        }
+    /**
+     * If the card is visible, show the card
+     * If the card is hidden, show the image that represents a card not available
+     */
+    private void drawCards(Stream<Card> cards, Graphics g, ImageObserver observer){
+        cards.forEach( card -> {
+        	g.drawImage(card.isVisible() ? card.getImage() : Deck.HIDDEN_SIDE, card.getImageXLocation(), 
+        			card.getImageYLocation(), Constants.CARD_X_SIZE, Constants.CARD_Y_SIZE, observer);
+        });
     }
 
     private void drawDraggedCards(LinkedList<Card> cards, Graphics g, ImageObserver observer){
@@ -145,70 +124,34 @@ public class Board{
         }
     }
     
-    // This method is used to add the cards to each group when the game starts
-    public void addCards(LinkedList<Card> cards){
-        int currentStack = 1;
-        Card currentCard;
-
-        while(cards.size() > 0) {
-            switch(currentStack){
-                case 1:
-                    currentStack = setInitialCardData(cards, gameGroup1, currentStack);
-                    break;
-                case 2:
-                    currentStack = setInitialCardData(cards, gameGroup2, currentStack);
-                    break;
-                case 3:
-                    currentStack = setInitialCardData(cards, gameGroup3, currentStack);
-                    break;
-                case 4:
-                    currentStack = setInitialCardData(cards, gameGroup4, currentStack);
-                    break;
-                case 5:
-                    currentStack = setInitialCardData(cards, gameGroup5, currentStack);
-                    break;
-                case 6:
-                    currentStack = setInitialCardData(cards, gameGroup6, currentStack);
-                    break;
-                case 7:
-                    currentStack = setInitialCardData(cards, gameGroup7, currentStack);
-                    break;
-                case 8:
-                    currentCard = cards.remove();
-                    currentCard.setIsVisible(false);
-                    currentCard.setImageXLocation(provider1.getX_position());
-                    currentCard.setImageYLocation(provider1.getY_position());
-                    provider1.addCard(currentCard);
-                    break;
-            }
-        }
-    }
-    
     /**
+     * This method is used to add the cards to each group when the game starts.
      * This define the initial state of the cards in the 7 play groups, n cards hidden and the last one should be visible
      * @param cards
      * @param cardGroup
      * @param currentStack
      * @return 
      */
-    private int setInitialCardData(LinkedList<Card> cards, CardsGroup cardGroup, int currentStack){
-        Card currentCard;
-        // When the last card is going to be added, then make card visible
-        currentCard = cards.remove();
-        currentCard.setImageXLocation(cardGroup.getX_position());
-        currentCard.setImageYLocation(cardGroup.getY_position() + cardGroup.getCards().size() * Constants.SPACE_BETWEEN_CARDS_IN_LIST);
-        if(cardGroup.getCards().size() + 1 == cardGroup.getLimit()){
-
-            currentCard.setIsVisible(true);
-            cardGroup.addCard(currentCard);
-            currentStack++;
-        }else{
-            // Add the card hidden
-
-            currentCard.setIsVisible(false);
-            cardGroup.addCard(currentCard);
-        }
-        return currentStack;
+    public void addCards(LinkedList<Card> cards){
+        gameGroups.get().forEach(group -> {
+        	while(group.getCards().size() < group.getLimit()) {
+        		Card card = cards.remove();
+            	card.setImageXLocation(group.getX_position());
+            	card.setImageYLocation(group.getY_position() + group.getCards().size() * Constants.SPACE_BETWEEN_CARDS_IN_LIST);
+            	card.setIsVisible(group.getCards().size() + 1 == group.getLimit());
+            	group.addCard(card);	
+        	}
+        });
+        
+        providers.get().limit(1).forEach(group -> {
+        	while(cards.size() > 0) {
+        		Card card = cards.remove();
+                card.setIsVisible(false);
+                card.setImageXLocation(group.getX_position());
+                card.setImageYLocation(group.getY_position());
+                group.addCard(card);	
+        	}
+        });
     }
     
     public void clickProvider(int x, int y){
@@ -220,7 +163,7 @@ public class Board{
             if(provider1.getCards().isEmpty() && provider2.getCards().isEmpty()){
                 return;
             }
-            sound.playSound(Constants.Sounds.CLICK_PROVIDER);
+            Utils.playSound(Constants.Sounds.CLICK_PROVIDER);
 
             // TODO: Fix this issue, first card needs to be shown in this order, 123(1) 456(itr 2) remove 6, next itr swow543 
             while(!provider2.getCards().isEmpty()){
@@ -295,7 +238,7 @@ public class Board{
                 this.x_clicket_in_dragged_card = x - card.getImageXLocation();
                 this.y_clicket_in_dragged_card = y - card.getImageYLocation();
                 
-                sound.playSound(Constants.Sounds.DRAGGING);
+                Utils.playSound(Constants.Sounds.DRAGGING);
                 // Add the card, and the cards next to that one into draggedCards list
                 int cardsSize = cards.getCards().size();
                 for (int j = i; j < cardsSize; j++) {
@@ -367,7 +310,7 @@ public class Board{
                  conditionsForGroupsCompleted(groupCompleted4, draggedCards);
              }else{
                 this.moveAllCardsToAnotherList(draggedCards, groupOwnerOfDraggedCards);
-                sound.playSound(Constants.Sounds.STROKE);
+                Utils.playSound(Constants.Sounds.STROKE);
              }
         }
     }
@@ -391,19 +334,18 @@ public class Board{
                 draggedCard.setIsSelected(false);
                 draggedCards.getCards().remove();
                 this.setNewCoordinates(draggedCard, group);
-                sound.playSound(Constants.Sounds.CARD_OK);
+                Utils.playSound(Constants.Sounds.CARD_OK);
                 if(groupOwnerOfDraggedCards.getCards().size() > 0 && !groupOwnerOfDraggedCards.getCards().getFirst().isVisible()){
                     groupOwnerOfDraggedCards.getCards().getLast().setIsVisible(true);
                 }
                 // look if you have won!
-                this.checkGroupCompleted(gameGroups, Constants.CHECK_GAME_GROUPS);
-                this.checkGroupCompleted(groupsCompleted, !Constants.CHECK_GAME_GROUPS);   
+                this.checkGroupCompleted(groupsCompleted.get(), !Constants.CHECK_GAME_GROUPS);   
             }else{
                 this.setNewCoordinates(draggedCard, groupOwnerOfDraggedCards);
                 groupOwnerOfDraggedCards.addCard(draggedCard);
                 draggedCard.setIsSelected(false);
                 draggedCards.getCards().remove();
-                sound.playSound(Constants.Sounds.STROKE);
+                Utils.playSound(Constants.Sounds.STROKE);
             }
         }else{
             this.moveAllCardsToAnotherList(draggedCards, groupOwnerOfDraggedCards);
@@ -424,38 +366,34 @@ public class Board{
                 || group.getCards().isEmpty() && draggedCard.getNumber() == 13){
                 
                 this.moveAllCardsToAnotherList(draggedCards, group);
-                sound.playSound(Constants.Sounds.CARD_OK);
+                Utils.playSound(Constants.Sounds.CARD_OK);
                 if(groupOwnerOfDraggedCards.getCards().size() > 0 && !groupOwnerOfDraggedCards.getCards().getFirst().isVisible()){
                     groupOwnerOfDraggedCards.getCards().getLast().setIsVisible(true);
                 }
                 // look if you have won!
-                this.checkGroupCompleted(gameGroups, Constants.CHECK_GAME_GROUPS);
-                this.checkGroupCompleted(groupsCompleted, !Constants.CHECK_GAME_GROUPS);                
+                this.checkGroupCompleted(gameGroups.get(), Constants.CHECK_GAME_GROUPS);
             }else{
                 moveAllCardsToAnotherList(draggedCards, groupOwnerOfDraggedCards);
             }
     }
 
-    // Method that check if cards group is completed and gamer has won
-    private void checkGroupCompleted(CardsGroup[] groups, boolean isGameGroup) {
-    	int winners = 0;
-    	for(int i = 0; i < groups.length; i++) {
-    		if(groups[i].getCards().size() > 0) {
-	    		Card card = groups[i].getCards().getFirst();
-	    		boolean validateGameGroup = isGameGroup ? card.isVisible() : true;
-				if(validateGameGroup && groups[i].getCards().stream().mapToInt(Card::getNumber).sum() == 91) {
-	        		System.out.println(String.format("Usuario ha ganado! en el groupo %d", groups[i].getId()));
-	        		winners += 1;
-	        		if(winners == 4) {
-	        			break;
-	        		}
-	        	}
-    		}
-    	}
+    /**
+     * Method that check if cards group is completed and gamer has won
+     */
+    private void checkGroupCompleted(Stream<CardsGroup> groups, boolean isGameGroup) {
+    	long winners = groups.filter(group -> {
+    		return group.cards().count() > 0;
+    	}).filter(group -> {
+    		Card card = group.cards().findFirst().get();
+    		boolean validateGameGroup = isGameGroup ? card.isVisible() : true;
+			return validateGameGroup && group.cards().mapToInt(Card::getNumber).sum() == 91;
+    	}).filter(group -> {
+    		System.out.println(String.format("Usuario ha ganado! en el groupo %d", group.getId()));
+    		return true;
+    	}).count();
     	if(winners == 4) {
     		JOptionPane.showMessageDialog(null, "Ganaste!!!");
-    		return;
-    	}
+        }
 	}
 
     private boolean isXYInsideXYRegion(int mouse_x, int mouse_y, int region_x, int region_y){
@@ -471,7 +409,7 @@ public class Board{
             this.setNewCoordinates(card, target);
             target.addCard(card);
         }
-        sound.playSound(Constants.Sounds.STROKE);
+        Utils.playSound(Constants.Sounds.STROKE);
         
     }
     private void setNewCoordinates(Card card, CardsGroup groupOwner){
