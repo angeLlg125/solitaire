@@ -7,15 +7,10 @@ package common;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import sun.audio.AudioPlayer;
-import sun.audio.AudioStream;
-
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 /**
  *
  * @author angel
@@ -23,21 +18,22 @@ import sun.audio.AudioStream;
 public class Utils {
     
     public static void playSound(String soundName) {
-    String gongFile = "src/assets/sound/"+soundName;
-        InputStream in;
-        try {
-            in = new FileInputStream(gongFile);
-            AudioStream audioStream = new AudioStream(in);
-
-            AudioPlayer.player.start(audioStream);
-        } catch (Exception ex) {
-            Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    String gongFile = "res/sound/" + soundName;
+	    try
+	    {
+	        Clip clip = AudioSystem.getClip();
+	        clip.open(AudioSystem.getAudioInputStream(new File(gongFile)));
+	        clip.start();
+	    }
+	    catch (Exception exc)
+	    {
+	        exc.printStackTrace(System.out);
+	    }
     }
     
     public static BufferedImage readImage(String path){
         try {
-           return ImageIO.read(new File("src/assets/images/"+path));
+           return ImageIO.read(new File("res/img/"+path));
         } catch (IOException e) {
         }
         return null;
